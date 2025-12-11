@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        // 添加清华镜像源
+        maven { 
+            name = 'Tsinghua'
+            url = 'https://mirrors.tuna.tsinghua.edu.cn/gradle/gradle-plugin-portal/' 
+        }
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        gradlePluginPortal()
+    }
+}

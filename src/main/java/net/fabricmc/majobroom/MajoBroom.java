@@ -1,0 +1,86 @@
+package net.fabricmc.majobroom;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.fabricmc.fabric.impl.client.itemgroup.FabricCreativeGuiComponents;
+import net.fabricmc.majobroom.armors.ArmorFabric;
+import net.fabricmc.majobroom.armors.BaseArmor;
+import net.fabricmc.majobroom.config.MajoBroomConfig;
+import net.fabricmc.majobroom.entity.BroomEntity;
+import net.fabricmc.majobroom.items.BroomItem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.text.Text;
+
+
+public class MajoBroom implements ModInitializer {
+	public static final String MODID = "majobroom";
+	public static ItemGroup majoGroup;
+	
+
+	//盔甲部分
+	public static final ArmorMaterial FABRIC_ARMOR = new ArmorFabric();
+	public static final Item broomItem = new BroomItem(new Item.Settings().maxCount(1));
+//	group(MajoBroom.majoGroup)
+	public static final Item majoCloth = new BaseArmor(FABRIC_ARMOR, ArmorItem.Type.CHESTPLATE);
+//	public static final Item majoStocking = new BaseArmor(FABRIC_ARMOR, EquipmentSlot.FEET);
+	public static final Item majoHat = new BaseArmor(FABRIC_ARMOR, ArmorItem.Type.HELMET);
+
+
+	//ItemGroup
+	static {
+		// 使用旧版兼容方式创建ItemGroup
+		majoGroup = FabricItemGroup.builder()
+			.icon(() -> new ItemStack(MajoBroom.broomItem))
+			.displayName(Text.literal("Majo Broom"))
+			.entries((context, entries) -> {
+				entries.add(broomItem);
+				entries.add(majoHat);
+				entries.add(majoCloth);
+			})
+			.build();
+		Registry.register(Registries.ITEM_GROUP, new Identifier(MODID, "majo_group"), majoGroup);
+	}
+	
+
+
+	//实体
+	public static final EntityType<BroomEntity> BROOM_ENTITY_ENTITY_TYPE = Registry.register(
+			Registries.ENTITY_TYPE,
+			new Identifier(MODID, "majo_broom"),
+			FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, BroomEntity::new).dimensions(EntityDimensions.fixed(0.75f, 0.75f)).build()
+	);
+
+	@Override
+	public void onInitialize() {
+
+		Registry.register(Registries.ITEM, new Identifier(MODID, "broom_item"), broomItem);
+		Registry.register(Registries.ITEM, new Identifier(MODID, "majo_cloth"), majoCloth);
+//		Registry.register(Registries.ITEM, new Identifier(MODID, "stocking"), majoStocking);
+		Registry.register(Registries.ITEM, new Identifier(MODID, "majo_hat"), majoHat);
+//		FabricDefaultAttributeRegistry.register(CUBE, CubeEntity);
+//		Registry.register(Registries.ITEM, new Identifier(MODID, "fabric_helmet"), new BaseArmor(FABRIC_ARMOR, EquipmentSlot.HEAD));
+		MajoBroomConfig.getInstance();
+
+	}
+
+
+
+	public static void main(String[] args) {
+		System.out.println("sda");
+	}
+}
